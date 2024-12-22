@@ -1,5 +1,7 @@
 import { BookUser, Edit, Frown, Search, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Contact } from "../../../app/models/contact";
+import { ROUTES } from "../../../app/router/routes";
 import { Btn } from "../../../components/btn";
 import { Loading } from "../../../components/loading";
 
@@ -75,9 +77,9 @@ export function ContactList({
             <span className="text-gray-100">{contact.phone}</span>
           </div>
           <div className="flex items-center gap-2">
-            <button>
+            <Link to={`${ROUTES.editContact}/${contact.id}`}>
               <Edit className="text-indigo-500" />
-            </button>
+            </Link>
             <button>
               <Trash2 className="text-rose-400" />
             </button>

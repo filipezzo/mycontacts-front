@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
-import { API } from "../../../app/router/api";
-import { Btn } from "../../../components/btn";
-import { Input } from "../../../components/input";
-import { Loading } from "../../../components/loading";
-import { Select } from "../../../components/select";
+import { API } from "../app/router/api";
+import { Btn } from "./btn";
+import { Input } from "./input";
+import { Loading } from "./loading";
+import { Select } from "./select";
 
 const schema = z.object({
   name: z.string().min(4, "o nome deve conter no min 4 ch"),
@@ -18,7 +18,17 @@ const schema = z.object({
 
 type SchemaType = z.infer<typeof schema>;
 
-export function NewForm() {
+interface ContactFormProps {
+  initialData?: SchemaType;
+  mode: "create" | "edit";
+  contactId?: string;
+}
+
+export function ContactForm({
+  initialData,
+  mode,
+  contactId,
+}: ContactFormProps) {
   const {
     register,
     handleSubmit,
@@ -26,40 +36,44 @@ export function NewForm() {
     formState: { errors, isSubmitting },
   } = useForm<SchemaType>({
     resolver: zodResolver(schema),
+    defaultValues: initialData,
   });
 
   const nav = useNavigate();
+  const createMode = mode === "create";
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const response = await fetch(`${API.BASEURL}${API.CONTACTS}`, {
-        method: "POST",
+      const url = createMode
+        ? `${API.BASEURL}${API.CONTACTS}`
+        : `${API.BASEURL}${API.CONTACTS}/${contactId}`;
+      const method = createMode ? "POST" : "PUT";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
 
-      if (response.status === 201) {
-        toast.success("Contato criado com sucesso.", {
+      if (response.ok) {
+        const message = createMode
+          ? "Contato criado com sucesso"
+          : "Contato editado com sucesso";
+        toast.success(message, {
           duration: 2500,
         });
-
         nav("/");
-      }
-
-      if (response.status !== 201) {
+      } else {
         throw new Error("Algo deu errado, tente novamente.");
       }
-
-      console.log(response);
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {
         toast.error(error?.message, {
           duration: 4000,
         });
-        return;
       }
     }
   });
@@ -81,7 +95,13 @@ export function NewForm() {
         className="mt-2 flex max-w-96 justify-center"
         type="submit"
       >
-        {isSubmitting ? <Loading /> : "Cadastrar"}
+        {isSubmitting ? (
+          <Loading />
+        ) : mode === "create" ? (
+          "Cadastrar"
+        ) : (
+          "Editar"
+        )}
       </Btn>
     </form>
   );
