@@ -1,4 +1,4 @@
-import { BookUser, Edit, Frown, Trash2 } from "lucide-react";
+import { BookUser, Edit, Frown, Search, Trash2 } from "lucide-react";
 import { Contact } from "../../../app/models/contact";
 import { Btn } from "../../../components/btn";
 import { Loading } from "../../../components/loading";
@@ -9,6 +9,7 @@ interface ContactListProps {
   isError: boolean;
   onTryAgain: () => void;
   numberOfContacts: number;
+  initialNumberOfContacts: number;
 }
 
 export function ContactList({
@@ -17,6 +18,7 @@ export function ContactList({
   isError,
   onTryAgain,
   numberOfContacts,
+  initialNumberOfContacts,
 }: ContactListProps) {
   if (isLoading) {
     return <Loading />;
@@ -36,7 +38,7 @@ export function ContactList({
     );
   }
 
-  if (numberOfContacts === 0) {
+  if (initialNumberOfContacts === 0) {
     return (
       <div className="flex flex-col items-center gap-2">
         <BookUser size={56} />
@@ -44,6 +46,15 @@ export function ContactList({
           Você ainda não tem nenhum contato cadastrado! Clique no botão ”Novo
           contato” à cima para cadastrar o seu primeiro!
         </p>
+      </div>
+    );
+  }
+
+  if (numberOfContacts === 0) {
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <Search size={56} />
+        <p className="text-center">Nenhum contato encontrado com este nome!</p>
       </div>
     );
   }
