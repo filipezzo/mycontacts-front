@@ -9,9 +9,10 @@ interface ContactListProps {
   contacts: Contact[];
   isLoading: boolean;
   isError: boolean;
-  onTryAgain: () => void;
   numberOfContacts: number;
   initialNumberOfContacts: number;
+  onTryAgain: () => void;
+  onDeleteContact: (id: string) => void;
 }
 
 export function ContactList({
@@ -19,6 +20,7 @@ export function ContactList({
   isLoading,
   isError,
   onTryAgain,
+  onDeleteContact,
   numberOfContacts,
   initialNumberOfContacts,
 }: ContactListProps) {
@@ -80,7 +82,7 @@ export function ContactList({
             <Link to={`${ROUTES.editContact}/${contact.id}`}>
               <Edit className="text-indigo-500" />
             </Link>
-            <button>
+            <button onClick={() => onDeleteContact(contact.id!)}>
               <Trash2 className="text-rose-400" />
             </button>
           </div>

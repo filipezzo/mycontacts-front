@@ -1,7 +1,9 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 import { Contact } from "../../app/models/contact";
+import { API } from "../../app/router/api";
 import { Separator } from "../../components/separator";
 import { ContactList } from "./components/contact-list";
 import { HomeHeader } from "./components/home-header";
@@ -32,6 +34,24 @@ export function Home() {
       newParams.set("orderBy", newValue);
       return newParams;
     });
+  };
+
+  const handleDeleteContact = async (id: string) => {
+    try {
+      const response = await fetch(`${API.BASEURL}${API.CONTACTS}/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Erro ao deletar contato");
+      }
+      const filteredContact = contacts.filter((contact) => contact.id !== id);
+      setContacts(filteredContact);
+      toast.success("Usuário deletado com sucesso.");
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      }
+    }
   };
 
   const fetchData = useCallback(async () => {
@@ -101,6 +121,7 @@ export function Home() {
           onTryAgain={fetchData}
           numberOfContacts={filteredNumberOfContacts}
           initialNumberOfContacts={numberOfContacts}
+          onDeleteContact={handleDeleteContact}
         />
       </div>
     </section>
