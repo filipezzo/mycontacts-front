@@ -5,10 +5,11 @@ import { SelectOptions } from "./selectOptions";
 
 interface SelectProps extends ComponentProps<"select"> {
   className?: string;
+  value: string;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ className, ...rest }, ref) => {
+  ({ className, value, ...rest }, ref) => {
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -44,12 +45,14 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           className,
         )}
         ref={ref}
+        defaultValue={value}
         {...rest}
       >
         <SelectOptions
           options={options}
           isLoading={loading}
           isError={!!error}
+          selectedValue={value}
         />
       </select>
     );

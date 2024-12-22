@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Contact } from "../app/models/contact";
 import { API } from "../app/router/api";
 import { Btn } from "./btn";
 import { Input } from "./input";
@@ -19,7 +20,7 @@ const schema = z.object({
 type SchemaType = z.infer<typeof schema>;
 
 interface ContactFormProps {
-  initialData?: SchemaType;
+  initialData?: Contact;
   mode: "create" | "edit";
   contactId?: string;
 }
@@ -36,7 +37,7 @@ export function ContactForm({
     formState: { errors, isSubmitting },
   } = useForm<SchemaType>({
     resolver: zodResolver(schema),
-    defaultValues: initialData,
+    defaultValues: { ...initialData, category_id: initialData?.category_id },
   });
 
   const nav = useNavigate();
@@ -89,7 +90,10 @@ export function ContactForm({
         <small className="text-rose-400">{errors.email.message}</small>
       )}
       <Input {...register("phone")} placeholder="Telefone" />
-      <Select {...register("category_id")} />
+      <Select
+        {...register("category_id")}
+        value={initialData?.category_id ?? ""}
+      />
       <Btn
         disabled={isSubmitting}
         className="mt-2 flex max-w-96 justify-center"

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Contact } from "../../app/models/contact";
 import { API } from "../../app/router/api";
+import { ContactForm } from "../../components/contact-form";
 import { Loading } from "../../components/loading";
 import { EditHeader } from "./components/edit-header";
 
@@ -11,8 +12,6 @@ export function EditContact() {
   const [error, setError] = useState<string | null>(null);
 
   const { id } = useParams();
-
-  console.log(contact);
 
   const fetchContact = async () => {
     try {
@@ -49,6 +48,7 @@ export function EditContact() {
   return (
     <div className="flex flex-col">
       <EditHeader name={contact.name} />
+      <ContactForm mode="edit" contactId={id} initialData={contact} />
     </div>
   );
 }
