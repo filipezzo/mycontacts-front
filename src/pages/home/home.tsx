@@ -27,6 +27,7 @@ export function Home() {
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
+        return;
       }
       setError("Algo deu errado");
     } finally {

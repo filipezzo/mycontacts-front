@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { Toaster } from "sonner";
 
 export function Layout() {
   return (
@@ -11,6 +12,7 @@ export function Layout() {
         </header>
         <Outlet />
       </main>
+      <Toaster />
     </div>
   );
 }

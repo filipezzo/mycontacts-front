@@ -1,12 +1,11 @@
+import { NewForm } from "./components/new-form";
 import { NewHeader } from "./components/new-header";
 
 export function NewContact() {
   return (
-    <section className="">
+    <section className="flex flex-col">
       <NewHeader />
-      <form>
-        <input />
-      </form>
+      <NewForm />
     </section>
   );
 }

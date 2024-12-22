@@ -1,6 +1,7 @@
 import { BookUser, Edit, Frown, Trash2 } from "lucide-react";
 import { Contact } from "../../../app/models/contact";
 import { Btn } from "../../../components/btn";
+import { Loading } from "../../../components/loading";
 
 interface ContactListProps {
   contacts: Contact[];
@@ -18,9 +19,7 @@ export function ContactList({
   numberOfContacts,
 }: ContactListProps) {
   if (isLoading) {
-    return (
-      <div className="size-6 animate-spin rounded-full border border-r-indigo-500 border-t-indigo-500" />
-    );
+    return <Loading />;
   }
 
   if (isError) {
