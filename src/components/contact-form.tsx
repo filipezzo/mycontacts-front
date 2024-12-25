@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
+import ApiError from "../app/errors/api-error";
 import { Contact } from "../app/models/contact";
 import ContactsService from "../app/services/ContactsService";
 import { Btn } from "./btn";
@@ -55,7 +56,7 @@ export function ContactForm({
       nav("/");
     } catch (error) {
       console.log(error);
-      if (error instanceof Error) {
+      if (error instanceof ApiError) {
         toast.error(error?.message, {
           duration: 4000,
         });

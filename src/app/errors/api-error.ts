@@ -14,6 +14,8 @@ export default class ApiError extends Error {
     this.name = "ApiError";
     this.response = response;
     this.message =
-      body?.message || `${response.status} - ${response.statusText}`;
+      body?.message ||
+      body?.error ||
+      `${response.status} - ${response.statusText}`;
   }
 }

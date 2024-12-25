@@ -8,7 +8,7 @@ class ContactsService {
     this.httpClient = new HttpClient("http://localhost:3000");
   }
   async listContacts(orderBy: string) {
-    return this.httpClient.get(`/contactsx/?orderBy=${orderBy}`);
+    return this.httpClient.get(`/contacts/?orderBy=${orderBy}`);
   }
 
   async getContact(id: string) {
@@ -16,33 +16,15 @@ class ContactsService {
   }
 
   async createContact(data: FormContactData) {
-    const response = await fetch("http://localhost:3000/contacts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    return response.json();
+    return this.httpClient.post("/contacts", data);
   }
 
   async editContact(data: FormContactData, id: string) {
-    const response = await fetch(`http://localhost:3000/contacts/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    return response.json();
+    return this.httpClient.put(`/contacts/${id}`, data);
   }
 
   async deleteContact(id: string) {
-    await fetch(`http://localhost:3000/contacts/${id}`, {
-      method: "DELETE",
-    });
+    this.httpClient.delete(`/contacts`, id);
   }
 }
 
