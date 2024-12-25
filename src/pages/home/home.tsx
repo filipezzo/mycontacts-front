@@ -2,8 +2,9 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import ApiError from "../../app/errors/api-error";
 import { Contact } from "../../app/models/contact";
-import { API } from "../../app/router/api";
+import ContactsService from "../../app/services/ContactsService";
 import { Separator } from "../../components/separator";
 import { ContactList } from "./components/contact-list";
 import { HomeHeader } from "./components/home-header";
@@ -38,18 +39,14 @@ export function Home() {
 
   const handleDeleteContact = async (id: string) => {
     try {
-      const response = await fetch(`${API.BASEURL}${API.CONTACTS}/${id}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        throw new Error("Erro ao deletar contato");
-      }
+      await ContactsService.deleteContact(id);
       const filteredContact = contacts.filter((contact) => contact.id !== id);
       setContacts(filteredContact);
       toast.success("Usuário deletado com sucesso.");
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
+        console.log(error);
       }
     }
   };
@@ -58,15 +55,16 @@ export function Home() {
     setError(null);
     setLoading(true);
     try {
-      const response = await fetch(
-        `http://localhost:3000/contacts?orderBy=${orderBy}`,
-      );
-      if (!response.ok) throw new Error("Algo deu errado");
-      const data = await response.json();
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const data = await ContactsService.listContacts(orderBy);
+
       setContacts(data);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Algo deu errado");
+      if (error instanceof ApiError) {
+        setError(error.message);
+        console.log(error.message);
+        return;
+      }
+      setError("Algo deu errado");
     } finally {
       setLoading(false);
     }

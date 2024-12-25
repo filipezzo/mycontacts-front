@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Contact } from "../app/models/contact";
-import { API } from "../app/router/api";
+import ContactsService from "../app/services/ContactsService";
 import { Btn } from "./btn";
 import { Input } from "./input";
 import { Loading } from "./loading";
@@ -45,30 +45,14 @@ export function ContactForm({
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const url = createMode
-        ? `${API.BASEURL}${API.CONTACTS}`
-        : `${API.BASEURL}${API.CONTACTS}/${contactId}`;
-      const method = createMode ? "POST" : "PUT";
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        const message = createMode
-          ? "Contato criado com sucesso"
-          : "Contato editado com sucesso";
-        toast.success(message, {
-          duration: 2500,
-        });
-        nav("/");
+      if (createMode) {
+        await ContactsService.createContact(data);
+        toast.success("Usuário criado com sucesso.");
       } else {
-        throw new Error("Algo deu errado, tente novamente.");
+        await ContactsService.editContact(data, contactId!);
+        toast.success("Usuário editado com sucesso.");
       }
+      nav("/");
     } catch (error) {
       console.log(error);
       if (error instanceof Error) {

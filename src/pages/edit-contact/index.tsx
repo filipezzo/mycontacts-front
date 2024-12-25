@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { Contact } from "../../app/models/contact";
-import { API } from "../../app/router/api";
+import ContactsService from "../../app/services/ContactsService";
 import { ContactForm } from "../../components/contact-form";
 import { Loading } from "../../components/loading";
 import { EditHeader } from "./components/edit-header";
@@ -16,15 +17,13 @@ export function EditContact() {
   const fetchContact = async () => {
     try {
       setError(null);
-      const response = await fetch(`${API.BASEURL}${API.CONTACTS}/${id}`);
-      if (!response.ok) {
-        throw new Error("Algo deu errado ao buscar dados do usuário");
-      }
-      const data = await response.json();
+
+      const data = await ContactsService.getContact(id!);
       setContact(data);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
+        toast.error(error.message);
         return;
       }
     } finally {
